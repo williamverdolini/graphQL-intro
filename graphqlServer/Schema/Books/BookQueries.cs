@@ -8,17 +8,20 @@ namespace graphqlServer.Schema.Books
     [ExtendObjectType("Query")]
     public class BookQueries
     {
-        public IQueryable<Book> GetBooks(
-            [Service] IMongoCollection<Book> collection,
-            int skip = 0,
-            int limit = 50)
-            => collection.AsQueryable().Skip(skip).Take(limit);    
+        [UsePaging(IncludeTotalCount = true)]
+        [UseProjection]
+        [UseSorting]
+        [UseFiltering]
+        public IExecutable<Book> GetBooks(
+            [Service] IMongoCollection<Book> collection)
+            => collection.AsExecutable();    
 
-        public Book GetBookById(
+        [UseFirstOrDefault]
+        public IExecutable<Book> GetBookById(
             [Service] IMongoCollection<Book> collection,
             string id)
         {
-            return collection.Find(x => x.Id == id).FirstOrDefault();
+            return collection.Find(x => x.Id == id).AsExecutable();
         }
     }
 }

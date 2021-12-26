@@ -8,17 +8,20 @@ namespace graphqlServer.Schema.Publishers
     [ExtendObjectType("Query")]
     public class PublisherQueries
     {
-        public IQueryable<Publisher> GetPublishers(
-            [Service] IMongoCollection<Publisher> collection,
-            int skip = 0,
-            int limit = 50)
-            => collection.AsQueryable().Skip(skip).Take(limit);    
+        [UsePaging(IncludeTotalCount = true)]
+        [UseProjection]
+        [UseSorting]
+        [UseFiltering]
+        public IExecutable<Publisher> GetPublishers(
+            [Service] IMongoCollection<Publisher> collection)
+            => collection.AsExecutable();    
 
-        public Publisher GetPublisherById(
+        [UseFirstOrDefault]
+        public IExecutable<Publisher> GetPublisherById(
             [Service] IMongoCollection<Publisher> collection,
             string id)
         {
-            return collection.Find(x => x.Id == id).FirstOrDefault();
+            return collection.Find(x => x.Id == id).AsExecutable();
         }   
     }
 }

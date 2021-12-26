@@ -8,17 +8,20 @@ namespace graphqlServer.Schema.Authors
     [ExtendObjectType("Query")]
     public class AuthorQueries
     {
-        public IQueryable<Author> GetAuthors(
-            [Service] IMongoCollection<Author> collection,
-            int skip = 0,
-            int limit = 50)
-            => collection.AsQueryable().Skip(skip).Take(limit);   
+        [UsePaging(IncludeTotalCount = true)]
+        [UseProjection]
+        [UseSorting]
+        [UseFiltering]
+        public IExecutable<Author> GetAuthors(
+            [Service] IMongoCollection<Author> collection)
+            => collection.AsExecutable();    
 
-        public Author GetAuthorById(
+        [UseFirstOrDefault]
+        public IExecutable<Author> GetAuthorById(
             [Service] IMongoCollection<Author> collection,
             string id)
         {
-            return collection.Find(x => x.Id == id).FirstOrDefault();
+            return collection.Find(x => x.Id == id).AsExecutable();
         }
     }
 }
