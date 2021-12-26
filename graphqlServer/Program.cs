@@ -55,5 +55,6 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapGraphQL();
 });
+app.UseGraphQLSchemaPrint(Path.Combine(Directory.GetCurrentDirectory(), "..", "artifacts", "schema"));
 
 app.Run();

@@ -31,7 +31,8 @@ namespace graphqlServer.Support
 
         public override IDisposable ExecuteRequest(IRequestContext context)
         {
-            if(!_enabled) {
+            if (!_enabled)
+            {
                 return EmptyScope;
             }
             var httpContext = GetHttpContextFrom(context);
