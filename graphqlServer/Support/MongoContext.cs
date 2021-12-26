@@ -9,17 +9,21 @@ namespace graphqlServer.Support
         private readonly MongoClient _client;
         private readonly IMongoDatabase _database;
 
-        public MongoContext()
+        public MongoContext(IConfiguration configuration)
         {
+            var traceEnabled = configuration.GetValue<bool>("TraceDBEnabled", false);
             var settings = new MongoClientSettings
             {
                 ClusterConfigurator = cb =>
                 {
-                    // This will print the executed command to the console
-                    cb.Subscribe<CommandStartedEvent>(e =>
+                    if (traceEnabled)
                     {
-                        Console.WriteLine($"{e.CommandName} - {e.Command.ToJson()}");
-                    });
+                        // This will print the executed command to the console
+                        cb.Subscribe<CommandStartedEvent>(e =>
+                        {
+                            Console.WriteLine($"{e.CommandName} - {e.Command.ToJson()}");
+                        });
+                    }
                 }
             };
             _client = new MongoClient(settings);

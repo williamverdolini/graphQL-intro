@@ -4,11 +4,15 @@ using graphqlServer.Schema.Books;
 using graphqlServer.Schema.Middleware;
 using graphqlServer.Schema.Publishers;
 using graphqlServer.Support;
+using HotChocolate.Execution.Instrumentation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddLogging()
+    // Monitoring
+    .AddApplicationInsightsTelemetry()
+    .AddSingleton<IExecutionDiagnosticEventListener, ApplicationInsightsDiagnosticEventListener>()
     .AddSingleton<MongoContext>()
     .AddHostedService<DataSeeder>()
     .AddScoped(sp => sp.GetRequiredService<MongoContext>().Database.GetCollection<Author>("author"))
