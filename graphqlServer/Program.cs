@@ -45,6 +45,8 @@ builder.Services
     // Automatic Persisted Queries
     .UseAutomaticPersistedQueryPipeline()
     .AddInMemoryQueryStorage()
+    // Security
+    .SetSecurity();
     ;
 
 var app = builder.Build();

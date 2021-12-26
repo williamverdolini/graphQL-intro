@@ -1,4 +1,5 @@
 using HotChocolate.Execution;
+using HotChocolate.Execution.Configuration;
 using Path = System.IO.Path;
 
 namespace graphqlServer.Support
@@ -27,6 +28,19 @@ namespace graphqlServer.Support
                     }
                 }
             }
+            return builder;
+        }
+
+        public static IRequestExecutorBuilder SetSecurity(this IRequestExecutorBuilder builder)
+        {
+            var options = new HotChocolate.Execution.Options.RequestExecutorOptions
+            {
+                ExecutionTimeout = TimeSpan.FromSeconds(3),
+                IncludeExceptionDetails = true,
+            };
+            options.Complexity.MaximumAllowed = 1000;
+            options.Complexity.Enable = true;
+            builder.SetRequestOptions(_ => options);
             return builder;
         }
     }

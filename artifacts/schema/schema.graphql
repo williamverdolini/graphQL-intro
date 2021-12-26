@@ -29,7 +29,7 @@ type AuthorsConnection {
   edges: [AuthorsEdge!]
   "A flattened list of the nodes."
   nodes: [Author!]
-  totalCount: Int!
+  totalCount: Int! @cost(complexity: 5)
 }
 
 "An edge in a connection."
@@ -42,9 +42,9 @@ type AuthorsEdge {
 
 type Book implements Node {
   id: ID!
-  authors: [Author!]!
-  publisher: Publisher
-  relatedBooks: [Book!]!
+  authors: [Author!]! @cost(complexity: 5)
+  publisher: Publisher @cost(complexity: 5)
+  relatedBooks: [Book!]! @cost(complexity: 5)
   title: String
   abstract: String
   editionVersion: Int
@@ -60,7 +60,7 @@ type BooksConnection {
   edges: [BooksEdge!]
   "A flattened list of the nodes."
   nodes: [Book!]
-  totalCount: Int!
+  totalCount: Int! @cost(complexity: 5)
 }
 
 "An edge in a connection."
@@ -97,7 +97,7 @@ type PublishersConnection {
   edges: [PublishersEdge!]
   "A flattened list of the nodes."
   nodes: [Publisher!]
-  totalCount: Int!
+  totalCount: Int! @cost(complexity: 5)
 }
 
 "An edge in a connection."
@@ -113,12 +113,12 @@ type Query {
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
-  authors("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [AuthorSortInput!] where: AuthorFilterInput): AuthorsConnection
-  authorById(id: String!): Author
-  publishers("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [PublisherSortInput!] where: PublisherFilterInput): PublishersConnection
-  publisherById(id: String!): Publisher
-  books("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [BookSortInput!] where: BookFilterInput): BooksConnection
-  bookById(id: String!): Book
+  authors("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [AuthorSortInput!] where: AuthorFilterInput): AuthorsConnection @cost(complexity: 5, multipliers: [ "first", "last" ], defaultMultiplier: 10)
+  authorById(id: String!): Author @cost(complexity: 5)
+  publishers("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [PublisherSortInput!] where: PublisherFilterInput): PublishersConnection @cost(complexity: 5, multipliers: [ "first", "last" ], defaultMultiplier: 10)
+  publisherById(id: String!): Publisher @cost(complexity: 5)
+  books("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [BookSortInput!] where: BookFilterInput): BooksConnection @cost(complexity: 5, multipliers: [ "first", "last" ], defaultMultiplier: 10)
+  bookById(id: String!): Book @cost(complexity: 5)
 }
 
 "A person who wrote or co-wrote one or more books"
@@ -245,6 +245,9 @@ enum SortEnumType {
   DESC
 }
 
+"The cost directives is used to express the complexity of a field."
+directive @cost("Defines the complexity of the field." complexity: Int! = 1 "Defines field arguments that act as complexity multipliers." multipliers: [MultiplierPath!] defaultMultiplier: Int) on FIELD_DEFINITION
+
 directive @decodeBase64 on FIELD
 
 "The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
@@ -258,3 +261,6 @@ directive @stream("If this argument label has a value other than null, it will b
 
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
 scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
+
+"The multiplier path scalar represents a valid GraphQL multiplier path string."
+scalar MultiplierPath
