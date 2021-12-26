@@ -5,11 +5,14 @@ using graphqlServer.Schema.Middleware;
 using graphqlServer.Schema.Publishers;
 using graphqlServer.Support;
 using HotChocolate.Execution.Instrumentation;
+using HotChocolate.Language;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddLogging()
+    .AddMemoryCache()
+    .AddSha256DocumentHashProvider(HashFormat.Hex)
     // Monitoring
     .AddApplicationInsightsTelemetry()
     .AddSingleton<IExecutionDiagnosticEventListener, ApplicationInsightsDiagnosticEventListener>()
@@ -39,6 +42,9 @@ builder.Services
     .AddType<BookType>()
     // Middlewares
     .AddDirectiveType<DecodeBase64DirectiveType>()
+    // Automatic Persisted Queries
+    .UseAutomaticPersistedQueryPipeline()
+    .AddInMemoryQueryStorage()
     ;
 
 var app = builder.Build();
