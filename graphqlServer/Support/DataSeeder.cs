@@ -155,7 +155,6 @@ namespace graphqlServer.Support
         {
             return documents.Select(d => d["id"].AsString).ToList();
         }
-
         private async Task<bool> IsDbInitializedAsync()
         {
             var dbs = await _db.Client
