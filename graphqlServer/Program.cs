@@ -1,4 +1,3 @@
-
 using graphqlServer.Schema.Authors;
 using graphqlServer.Schema.Books;
 using graphqlServer.Schema.Middleware;
@@ -9,7 +8,13 @@ using HotChocolate.Language;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Authentication/Authorization
 builder.Services
+    .AddJwtAuthentication(builder.Configuration);
+
+builder.Services
+    // Custom authorization policies
+    .AddAuthorizationPolicies()
     .AddLogging()
     .AddMemoryCache()
     .AddSha256DocumentHashProvider(HashFormat.Hex)
@@ -23,6 +28,7 @@ builder.Services
     .AddScoped(sp => sp.GetRequiredService<MongoContext>().Database.GetCollection<Book>("book"))
     // GraphQL Schema Definition
     .AddGraphQLServer()
+    .AddAuthorization()
     .AddQueryType(d => d.Name("Query"))
         .AddTypeExtension<AuthorQueries>()
         .AddTypeExtension<PublisherQueries>()
@@ -46,16 +52,34 @@ builder.Services
     .UseAutomaticPersistedQueryPipeline()
     .AddInMemoryQueryStorage()
     // Security
-    .SetSecurity();
+    .SetSecurity()
     ;
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ng-client",
+                      builder =>
+                      {
+                          builder.WithOrigins("http://localhost:4200")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            ;
+                      });
+});
 
 var app = builder.Build();
 
+app.UseCors("ng-client");
 app.MapGet("/", () => "Hello World!");
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGraphQL();
+    endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Auth}/{action=Index}/{id?}");
 });
 app.UseGraphQLSchemaPrint(Path.Combine(Directory.GetCurrentDirectory(), "..", "artifacts", "schema"));
 

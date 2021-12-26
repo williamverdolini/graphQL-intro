@@ -17,12 +17,15 @@ namespace graphqlServer.Schema.Books
             // Rewrite "authors" resolver to return complete book's authors
             descriptor
                 .Field(f => f.Authors)
-                .ResolveWith<BookResolvers>(t => t.GetAuthorsAsync(default!, default!, default!, default));
+                .ResolveWith<BookResolvers>(t => t.GetAuthorsAsync(default!, default!, default!, default))
+                .Authorize(roles: new [] {"admin"})
+                ;
 
             // Rewrite "publisher" resolver to return complete book's publisher
             descriptor
                 .Field(f => f.Publisher)
-                .ResolveWith<BookResolvers>(t => t.GetPublisherAsync(default!, default!, default!, default));
+                .ResolveWith<BookResolvers>(t => t.GetPublisherAsync(default!, default!, default!, default))
+                .Authorize(policy: "publishers.read");
 
             // Rewrite "relatedBooks" resolver to return complete book's related book info
             descriptor

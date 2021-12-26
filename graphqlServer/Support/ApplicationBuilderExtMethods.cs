@@ -1,5 +1,11 @@
+using System.Text;
+using graphqlServer.Controllers.Auth;
 using HotChocolate.Execution;
 using HotChocolate.Execution.Configuration;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using Path = System.IO.Path;
 
 namespace graphqlServer.Support
@@ -42,6 +48,37 @@ namespace graphqlServer.Support
             options.Complexity.Enable = true;
             builder.SetRequestOptions(_ => options);
             return builder;
+        }
+
+        public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
+        {
+            return services
+                    .AddAuthorization(options =>
+                        {
+                            options.AddPolicy("publishers.read", policy =>
+                                policy.Requirements.Add(new CanReadPublishersRequirement()));
+                        })
+                    .AddSingleton<IAuthorizationHandler, CanReadPublishersAuthorizationHandler>();
+        }
+
+        public static AuthenticationBuilder AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddControllers();
+            return services
+                    .AddTransient<IUserRepository, UserRepository>()
+                    .AddTransient<ITokenService, TokenService>()
+                    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters =
+                            new TokenValidationParameters
+                            {
+                                ValidIssuer = config["Jwt:Issuer"],
+                                ValidAudience = config["Jwt:Issuer"],
+                                ValidateIssuerSigningKey = true,
+                                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
+                            };
+                    });
         }
     }
 }

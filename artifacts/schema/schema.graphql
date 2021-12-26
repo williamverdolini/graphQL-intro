@@ -42,8 +42,8 @@ type AuthorsEdge {
 
 type Book implements Node {
   id: ID!
-  authors: [Author!]! @cost(complexity: 5)
-  publisher: Publisher @cost(complexity: 5)
+  authors: [Author!]! @authorize(roles: [ "admin" ], apply: BEFORE_RESOLVER) @cost(complexity: 5)
+  publisher: Publisher @authorize(policy: "publishers.read", apply: BEFORE_RESOLVER) @cost(complexity: 5)
   relatedBooks: [Book!]! @cost(complexity: 5)
   title: String
   abstract: String
@@ -240,10 +240,17 @@ input StringOperationFilterInput {
   nendsWith: String
 }
 
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+  AFTER_RESOLVER
+}
+
 enum SortEnumType {
   ASC
   DESC
 }
+
+directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
 
 "The cost directives is used to express the complexity of a field."
 directive @cost("Defines the complexity of the field." complexity: Int! = 1 "Defines field arguments that act as complexity multipliers." multipliers: [MultiplierPath!] defaultMultiplier: Int) on FIELD_DEFINITION
