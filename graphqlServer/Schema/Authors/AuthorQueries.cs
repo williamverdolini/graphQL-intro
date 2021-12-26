@@ -14,14 +14,15 @@ namespace graphqlServer.Schema.Authors
         [UseFiltering]
         public IExecutable<Author> GetAuthors(
             [Service] IMongoCollection<Author> collection)
-            => collection.AsExecutable();    
+            => collection.AsExecutable();
 
         [UseFirstOrDefault]
-        public IExecutable<Author> GetAuthorById(
-            [Service] IMongoCollection<Author> collection,
-            string id)
+        public Task<Author> GetAuthorById(
+            AuthorBatchDataLoader loader,
+            string id,
+            CancellationToken ct)
         {
-            return collection.Find(x => x.Id == id).AsExecutable();
+            return loader.LoadAsync(id, ct);
         }
     }
 }

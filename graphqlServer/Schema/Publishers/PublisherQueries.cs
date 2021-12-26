@@ -14,14 +14,15 @@ namespace graphqlServer.Schema.Publishers
         [UseFiltering]
         public IExecutable<Publisher> GetPublishers(
             [Service] IMongoCollection<Publisher> collection)
-            => collection.AsExecutable();    
+            => collection.AsExecutable();
 
         [UseFirstOrDefault]
-        public IExecutable<Publisher> GetPublisherById(
-            [Service] IMongoCollection<Publisher> collection,
-            string id)
+        public Task<Publisher> GetPublisherById(
+            PublisherBatchDataLoader loader,
+            string id,
+            CancellationToken ct)
         {
-            return collection.Find(x => x.Id == id).AsExecutable();
-        }   
+            return loader.LoadAsync(id, ct);
+        }
     }
 }

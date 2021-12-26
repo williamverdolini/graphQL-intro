@@ -2,7 +2,6 @@ using graphqlServer.Schema.Authors;
 using graphqlServer.Schema.Publishers;
 using HotChocolate;
 using HotChocolate.Types;
-using MongoDB.Driver;
 
 namespace graphqlServer.Schema.Books
 {
@@ -13,7 +12,7 @@ namespace graphqlServer.Schema.Books
             descriptor
                 .ImplementsNode()
                 .IdField(f => f.Id)
-                .ResolveNodeWith<BookResolvers>(r => r.ResolveAsync(default!, default!));
+                .ResolveNodeWith<BookResolvers>(r => r.ResolveAsync(default!, default!, default));
 
             // Rewrite "authors" resolver to return complete book's authors
             descriptor
@@ -35,67 +34,54 @@ namespace graphqlServer.Schema.Books
     public class BookResolvers
     {
         public Task<Book> ResolveAsync(
-            [Service] IMongoCollection<Book> collection,
-            string id)
+            BookBatchDataLoader loader,
+            string id,
+            CancellationToken ct)
         {
-            return collection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            return loader.LoadAsync(id, ct);
         }
 
         public async Task<IEnumerable<Author>> GetAuthorsAsync(
             [Parent] Book parent,
-            [Service] IMongoCollection<Book> books,
-            [Service] IMongoCollection<Author> authors,
-            CancellationToken cancellationToken)
+            BookBatchDataLoader bookLoader,
+            AuthorBatchDataLoader authorLoader,
+            CancellationToken ct)
         {
-            var authorIds = await books
-                        .Find(b => b.Id == parent.Id)
-                        .Project(b => b.Authors)
-                        .FirstOrDefaultAsync()
+            var p = await bookLoader
+                        .LoadAsync(parent.Id, ct)
                         .ConfigureAwait(false);
-            if(authorIds?.Length == 0) {
+            if (p.Authors == null || p.Authors.Length == 0)
+            {
                 return new List<Author>();
             }
-            return await authors
-                .Find(a => authorIds!.Contains(a.Id))
-                .ToListAsync(cancellationToken);
+            return await authorLoader.LoadAsync(p.Authors, ct);
         }
 
         public async Task<Publisher?> GetPublisherAsync(
             [Parent] Book parent,
-            [Service] IMongoCollection<Book> books,
-            [Service] IMongoCollection<Publisher> publishers,
-            CancellationToken cancellationToken)
+            BookBatchDataLoader bookLoader,
+            PublisherBatchDataLoader publisherLoader,
+            CancellationToken ct)
         {
-            var publisherId = await books
-                        .Find(b => b.Id == parent.Id && b.Publisher != null)
-                        .Project(b => b.Publisher)
-                        .FirstOrDefaultAsync()
-                        .ConfigureAwait(false);
-            if(publisherId == null) {
+            var p = await bookLoader.LoadAsync(parent.Id, ct).ConfigureAwait(false);
+            if (p.Publisher == null)
+            {
                 return null;
             }
-            return await publishers
-                .Find(a => a.Id == publisherId)
-                .FirstOrDefaultAsync(cancellationToken);
+            return await publisherLoader.LoadAsync(p.Publisher, ct).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<Book>> GetRelatedBooksAsync(
             [Parent] Book parent,
-            [Service] IMongoCollection<Book> books,
-            CancellationToken cancellationToken)
+            BookBatchDataLoader bookLoader,
+            CancellationToken ct)
         {
-            var relatedIds = await books
-                        .Find(b => b.Id == parent.Id && b.RelatedBooks != null)
-                        .Project(b => b.RelatedBooks)
-                        .FirstOrDefaultAsync()
-                        .ConfigureAwait(false);
-            if(relatedIds?.Length == 0) {
+            var p = await bookLoader.LoadAsync(parent.Id, ct).ConfigureAwait(false);
+            if (p.RelatedBooks == null || p.RelatedBooks.Length == 0)
+            {
                 return new List<Book>();
             }
-            return await books
-                .Find(a => relatedIds!.Contains(a.Id))
-                .ToListAsync(cancellationToken);
+            return await bookLoader.LoadAsync(p.RelatedBooks, ct).ConfigureAwait(false);
         }
     }
-
 }

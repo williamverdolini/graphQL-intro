@@ -1,5 +1,4 @@
 using HotChocolate.Types;
-using MongoDB.Driver;
 
 namespace graphqlServer.Schema.Authors
 {
@@ -10,10 +9,8 @@ namespace graphqlServer.Schema.Authors
             descriptor
                 .ImplementsNode()
                 .IdField(f => f.Id)
-                .ResolveNode(async (ctx, id) => {
-                    var author = await ctx.Service<IMongoCollection<Author>>().Find(x => x.Id == id).FirstOrDefaultAsync();
-                    return author;
-                });
+                .ResolveNode((ctx, id) => 
+                    ctx.DataLoader<AuthorBatchDataLoader>().LoadAsync(id, ctx.RequestAborted));
         }
     }
 }

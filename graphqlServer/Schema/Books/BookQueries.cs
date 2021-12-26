@@ -14,14 +14,15 @@ namespace graphqlServer.Schema.Books
         [UseFiltering]
         public IExecutable<Book> GetBooks(
             [Service] IMongoCollection<Book> collection)
-            => collection.AsExecutable();    
+            => collection.AsExecutable();
 
         [UseFirstOrDefault]
-        public IExecutable<Book> GetBookById(
-            [Service] IMongoCollection<Book> collection,
-            string id)
+        public Task<Book> GetBookById(
+            BookBatchDataLoader loader,
+            string id,
+            CancellationToken ct)
         {
-            return collection.Find(x => x.Id == id).AsExecutable();
+            return loader.LoadAsync(id, ct);
         }
     }
 }
