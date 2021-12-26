@@ -1,4 +1,6 @@
+using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Events;
 
 namespace graphqlServer.Support
 {
@@ -9,7 +11,18 @@ namespace graphqlServer.Support
 
         public MongoContext()
         {
-            _client = new MongoClient();
+            var settings = new MongoClientSettings
+            {
+                ClusterConfigurator = cb =>
+                {
+                    // This will print the executed command to the console
+                    cb.Subscribe<CommandStartedEvent>(e =>
+                    {
+                        Console.WriteLine($"{e.CommandName} - {e.Command.ToJson()}");
+                    });
+                }
+            };
+            _client = new MongoClient(settings);
             _database = _client.GetDatabase("books");
         }
 
