@@ -1,6 +1,7 @@
 
 using graphqlServer.Schema.Authors;
 using graphqlServer.Schema.Books;
+using graphqlServer.Schema.Middleware;
 using graphqlServer.Schema.Publishers;
 using graphqlServer.Support;
 
@@ -32,6 +33,8 @@ builder.Services
     .AddType<AuthorType>()
     .AddType<PublisherType>()
     .AddType<BookType>()
+    // Middlewares
+    .AddDirectiveType<DecodeBase64DirectiveType>()
     ;
 
 var app = builder.Build();
