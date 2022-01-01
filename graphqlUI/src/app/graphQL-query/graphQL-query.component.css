@@ -1,0 +1,58 @@
+.box-width {
+  width: 600px !important;
+}
+
+.m-r-s {
+  margin-right: 20px;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.query-input.terminal::before {
+  content: "\2022 \2022 \2022 Query";
+}
+
+.query-variables.terminal::before {
+  content: "\2022 \2022 \2022 Variables";
+}
+
+.query-token.terminal::before {
+  content: "\2022 \2022 \2022 Token";
+}
+
+.query-result.terminal::before {
+  content: "\2022 \2022 \2022 Result";
+}
+
+.terminal > input,
+.terminal > textarea {
+  background-color: black;
+  color: wheat !important;
+  width: 100%;
+}
+.query-input > textarea {
+  height: 300px;
+}
+.query-variables > textarea {
+  height: 100px;
+}
+
+.terminal-normal {
+  color: wheat !important;
+}
+
+.terminal-warning {
+  color: orange !important;
+}
+
+.full-length {
+  width: 100%;
+}

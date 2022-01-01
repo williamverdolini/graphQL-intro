@@ -1,0 +1,26 @@
+<div class="flex-row">
+  <div class="flex-column box-width m-r-s">
+    <div class="card-container">
+      <div class="card card-small" (click)="setQuery('init')">Init</div>
+      <div class="card card-small" (click)="setQuery('publisher')">Publishers</div>
+      <div class="card card-small" (click)="setQuery('authors')">Authors</div>
+      <div class="card card-small" (click)="setQuery('book')">Book</div>
+      <div class="card card-small" (click)="setQuery('authorsFragment')">Author Fragment</div>
+      <div class="card card-small card-primary" (click)="executeQuery()">Execute</div>
+
+    </div>
+    <div class="terminal query-input">
+      <textarea class="terminal-normal" [(ngModel)]="query"></textarea>
+    </div>
+    <div class="terminal query-variables">
+      <textarea class="terminal-normal" [(ngModel)]="variables"></textarea>
+    </div>
+    <div class="terminal query-token">
+      <input class="full-length" [(ngModel)]="token" (ngModelChange)="setToken($event)">
+    </div>
+  </div>
+  <div class="terminal query-result box-width" >
+    <pre *ngIf="data" class="terminal-normal">{{data | json}}</pre>
+    <pre *ngIf="errors" class="terminal-warning">{{errors | json}}</pre>
+  </div>
+</div>
