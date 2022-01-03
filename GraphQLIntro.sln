@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "graphqlServer", "graphqlServer\graphqlServer.csproj", "{2A8409A4-CD2A-470A-BAC1-708B528166A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "graphqlGateway", "graphqlGateway\graphqlGateway.csproj", "{477758FB-726E-4732-B619-7536CA7EC88E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "graphqlWarehouse", "graphqlWarehouse\graphqlWarehouse.csproj", "{740FD8AF-6A52-488F-8405-B724337E2843}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{2A8409A4-CD2A-470A-BAC1-708B528166A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A8409A4-CD2A-470A-BAC1-708B528166A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A8409A4-CD2A-470A-BAC1-708B528166A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{477758FB-726E-4732-B619-7536CA7EC88E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{477758FB-726E-4732-B619-7536CA7EC88E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{477758FB-726E-4732-B619-7536CA7EC88E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{477758FB-726E-4732-B619-7536CA7EC88E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{740FD8AF-6A52-488F-8405-B724337E2843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{740FD8AF-6A52-488F-8405-B724337E2843}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{740FD8AF-6A52-488F-8405-B724337E2843}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{740FD8AF-6A52-488F-8405-B724337E2843}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
