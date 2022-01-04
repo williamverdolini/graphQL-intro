@@ -109,6 +109,7 @@ type PublishersEdge {
 }
 
 type Query {
+  _schemaDefinition(configuration: String!): _SchemaDefinition
   "Fetches an object given its ID."
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
@@ -119,6 +120,12 @@ type Query {
   publisherById(id: String!): Publisher @cost(complexity: 5)
   books("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [BookSortInput!] where: BookFilterInput): BooksConnection @cost(complexity: 5, multipliers: [ "first", "last" ], defaultMultiplier: 10)
   bookById(id: String!): Book @cost(complexity: 5)
+}
+
+type _SchemaDefinition {
+  name: String!
+  document: String!
+  extensionDocuments: [String!]!
 }
 
 "A person who wrote or co-wrote one or more books"

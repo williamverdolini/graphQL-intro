@@ -14,6 +14,7 @@
     <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="12.1.0" />
     <PackageReference Include="HotChocolate.Data.MongoDb" Version="12.1.0" />
     <PackageReference Include="HotChocolate.PersistedQueries.InMemory" Version="12.1.0" />
+    <PackageReference Include="HotChocolate.Stitching" Version="12.1.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.12.1" />

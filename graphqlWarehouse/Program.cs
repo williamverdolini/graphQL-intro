@@ -22,7 +22,13 @@ builder.Services
     .AddMongoDbPagingProviders()
     // Global Object Identification
     .AddGlobalObjectIdentification()
-    .AddType<InventoryType>();    
+    .AddType<InventoryType>()
+    // Schema Federation
+    .InitializeOnStartup()
+    .PublishSchemaDefinition(c => c
+          // The name of the schema. This name should be unique
+        .SetName("inventories")
+        .AddTypeExtensionsFromFile("./Schema/Stitching.graphql"))
     ;
 
 var app = builder.Build();

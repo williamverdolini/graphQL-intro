@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="HotChocolate.AspNetCore" Version="12.1.0" />
     <PackageReference Include="HotChocolate.Data.MongoDb" Version="12.1.0" />
+    <PackageReference Include="HotChocolate.Stitching" Version="12.1.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.12.1" />
   </ItemGroup>
 

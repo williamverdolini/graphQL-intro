@@ -1,0 +1,3 @@
+extend type Inventory {
+    product: Book @delegate(path: "bookById(id: $fields:productId)")
+}

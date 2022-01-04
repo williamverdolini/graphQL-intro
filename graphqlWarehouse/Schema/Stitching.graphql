@@ -1,0 +1,3 @@
+extend type Book implements Node {
+    availability: [Inventory!]! @delegate(path: "inventoriesByProductId(productId: $fields:id)")
+}

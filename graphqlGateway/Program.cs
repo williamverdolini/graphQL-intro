@@ -8,7 +8,6 @@ builder.Services
     .AddGraphQLServer()
     .AddRemoteSchema("books")
     .AddRemoteSchema("inventories")
-    .AddTypeExtensionsFromFile("./Stitching.graphql");
     ;
 
 

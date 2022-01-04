@@ -1,7 +1,0 @@
-extend type Query {
-  topBooks(first: Int = 5): BooksConnection @delegate(schema: "books", path: "books")
-}
-
-extend type Book {
-    availability: [Inventory!]! @delegate(schema: "inventories", path: "inventoriesByProductId(productId: $fields:id)")
-}

@@ -53,6 +53,12 @@ builder.Services
     .AddInMemoryQueryStorage()
     // Security
     .SetSecurity()
+    // Schema Federation
+    .InitializeOnStartup()
+    .PublishSchemaDefinition(c => c
+        // The name of the schema. This name should be unique
+        .SetName("books")
+        .AddTypeExtensionsFromFile("./Schema/Stitching.graphql"))
     ;
 
 builder.Services.AddCors(options =>
