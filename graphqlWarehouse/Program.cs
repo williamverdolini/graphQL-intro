@@ -23,6 +23,8 @@ builder.Services
     // Global Object Identification
     .AddGlobalObjectIdentification()
     .AddType<InventoryType>()
+    // Polymorphic IDs
+    .AddPolymorphicIds()
     // Schema Federation
     .InitializeOnStartup()
     .PublishSchemaDefinition(c => c
