@@ -12,9 +12,10 @@ namespace graphqlServer.Support
         public MongoContext(IConfiguration configuration)
         {
             var traceEnabled = configuration.GetValue<bool>("TraceDBEnabled", false);
-            var settings = new MongoClientSettings
-            {
-                ClusterConfigurator = cb =>
+            
+            var url = new MongoUrl(configuration.GetConnectionString("mongodb"));
+            var settings = MongoClientSettings.FromUrl(url);
+            settings.ClusterConfigurator = cb =>
                 {
                     if (traceEnabled)
                     {
@@ -24,10 +25,9 @@ namespace graphqlServer.Support
                             Console.WriteLine($"{e.CommandName} - {e.Command.ToJson()}");
                         });
                     }
-                }
-            };
+                };            
             _client = new MongoClient(settings);
-            _database = _client.GetDatabase("books");
+            _database = _client.GetDatabase(url.DatabaseName);
         }
 
         public IMongoClient Client => _client;

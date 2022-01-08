@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "graphqlGateway", "graphqlGa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "graphqlWarehouse", "graphqlWarehouse\graphqlWarehouse.csproj", "{740FD8AF-6A52-488F-8405-B724337E2843}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "graphqlTests", "graphqlTests\graphqlTests.csproj", "{022F57CB-358D-4E91-90A9-A3A55C4BFFE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{740FD8AF-6A52-488F-8405-B724337E2843}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{740FD8AF-6A52-488F-8405-B724337E2843}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{740FD8AF-6A52-488F-8405-B724337E2843}.Release|Any CPU.Build.0 = Release|Any CPU
+		{022F57CB-358D-4E91-90A9-A3A55C4BFFE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{022F57CB-358D-4E91-90A9-A3A55C4BFFE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{022F57CB-358D-4E91-90A9-A3A55C4BFFE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{022F57CB-358D-4E91-90A9-A3A55C4BFFE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
