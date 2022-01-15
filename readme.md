@@ -13,7 +13,7 @@ This introduction is structured in progressive steps. Each of the steps is manag
 
 ## Scope
 
-The guide is intended to allow a guided introduction to the use of GraphQL with .NET framework. In my learning path I have decided to limit the scope of my research/study focusing exclusively on research capabilities and functionalities; for this reason I do NOT deal with issues related to [Mutations](https://graphql.org/learn/queries/#mutations) or [Subscriptions](https://graphql.org/blog/subscriptions-in-graphql-and-relay/) or other topics at all. In this intro I will cover:
+The guide wants to be a gentle introduction to the use of GraphQL with .NET framework. In my learning path I have decided to limit the scope of my research/study focusing exclusively on research capabilities and functionalities; for this reason I do NOT deal with issues related to [Mutations](https://graphql.org/learn/queries/#mutations) or [Subscriptions](https://graphql.org/blog/subscriptions-in-graphql-and-relay/) or other topics at all. In this intro I will cover:
 
 - an overview of what GraphQL is and its specifications
 - how to use GraphQL to read data in databases (MongoDb in particular)
@@ -38,6 +38,7 @@ The guide is intended to allow a guided introduction to the use of GraphQL with 
 14. [Schema Federation](./wiki/14.schema-federation.md)
 15. [Polymorphic Ids](./wiki/15.polymorphic-ids.md)
 16. [GraphQL Testing](./wiki/16.graphql-testing.md)
+16. [Http Interceptors](./wiki/17.http-interceptors.md)
 
 If you want to hands on this intro, clone the repo and switch to the step branches. 
 

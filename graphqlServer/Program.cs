@@ -1,6 +1,7 @@
 using graphqlServer.Schema.Authors;
 using graphqlServer.Schema.Books;
 using graphqlServer.Schema.Middleware;
+using graphqlServer.Schema.Orders;
 using graphqlServer.Schema.Publishers;
 using graphqlServer.Support;
 using HotChocolate.Execution.Instrumentation;
@@ -23,9 +24,11 @@ builder.Services
     .AddSingleton<IExecutionDiagnosticEventListener, ApplicationInsightsDiagnosticEventListener>()
     .AddSingleton<MongoContext>()
     .AddHostedService<DataSeeder>()
+    .AddHostedService<OrdersDataSeeder>()
     .AddScoped(sp => sp.GetRequiredService<MongoContext>().Database.GetCollection<Author>("author"))
     .AddScoped(sp => sp.GetRequiredService<MongoContext>().Database.GetCollection<Publisher>("publisher"))
     .AddScoped(sp => sp.GetRequiredService<MongoContext>().Database.GetCollection<Book>("book"))
+    .AddScoped(sp => sp.GetRequiredService<MongoContext>().Database.GetCollection<Order>("order"))
     // GraphQL Schema Definition
     .AddGraphQLServer()
     .AddAuthorization()
@@ -33,6 +36,7 @@ builder.Services
         .AddTypeExtension<AuthorQueries>()
         .AddTypeExtension<PublisherQueries>()
         .AddTypeExtension<BookQueries>()
+        .AddTypeExtension<UserOrderQueries>()
     // Registers the filter convention of MongoDB
     .AddMongoDbFiltering()
     // Registers the sorting convention of MongoDB
@@ -46,8 +50,10 @@ builder.Services
     .AddType<AuthorType>()
     .AddType<PublisherType>()
     .AddType<BookType>()
+    .AddType<OrderType>()
     // Middlewares
     .AddDirectiveType<DecodeBase64DirectiveType>()
+    .AddHttpRequestInterceptor<HttpRequestInterceptor>()
     // Automatic Persisted Queries
     .UseAutomaticPersistedQueryPipeline()
     .AddInMemoryQueryStorage()

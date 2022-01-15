@@ -51,5 +51,12 @@ namespace graphqlServer.Controllers.Auth
                     && x.UserName.ToLower() == name.ToLower())
                 .FirstOrDefault();
         }
+
+        public string[] GetUserNames()
+        {
+            return users
+                .Select(u => u.UserName)
+                .ToArray()!;
+        }
     }
 }

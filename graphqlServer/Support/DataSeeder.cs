@@ -48,7 +48,8 @@ namespace graphqlServer.Support
             {
                 _logger.LogError(ex, "Mongo Db is NOT running...Please start the MongoDb server");
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logger.LogError(ex, "Something wrong in data seeding!!");
                 throw;
             }

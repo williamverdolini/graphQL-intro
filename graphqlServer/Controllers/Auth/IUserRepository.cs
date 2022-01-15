@@ -4,5 +4,6 @@ namespace graphqlServer.Controllers.Auth
     {
         UserDTO? GetUserByCredential(UserCredential credential);
         UserDTO? GetUserByName(string name);
+        string[] GetUserNames();
     }
 }
