@@ -38,7 +38,8 @@ The guide wants to be a gentle introduction to the use of GraphQL with .NET fram
 14. [Schema Federation](./wiki/14.schema-federation.md)
 15. [Polymorphic Ids](./wiki/15.polymorphic-ids.md)
 16. [GraphQL Testing](./wiki/16.graphql-testing.md)
-16. [Http Interceptors](./wiki/17.http-interceptors.md)
+17. [Http Interceptors](./wiki/17.http-interceptors.md)
+18. [Conditional field projection](./wiki/18.conditional-field-projection.md)
 
 If you want to hands on this intro, clone the repo and switch to the step branches. 
 

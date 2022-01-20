@@ -72,7 +72,6 @@ type BooksEdge {
 }
 
 type Order {
-  bookId: String
   book: Book @cost(complexity: 5)
   id: String!
   userName: String

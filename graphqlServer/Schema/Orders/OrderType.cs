@@ -1,4 +1,5 @@
 using graphqlServer.Schema.Books;
+using graphqlServer.Support;
 using HotChocolate.Types;
 
 namespace graphqlServer.Schema.Orders
@@ -9,11 +10,10 @@ namespace graphqlServer.Schema.Orders
         {
             descriptor
                 .Field(f => f.BookId)
-                .IsProjected();
-
-            descriptor
-                .Field("book")
-                .Resolve<Book>((ctx, ct) 
+                .Name("book")
+                .UseScalarProjection() // custom extentsion method
+                .Type<BookType>()
+                .Resolve((ctx, ct)
                     => ctx.DataLoader<BookBatchDataLoader>()
                             .LoadAsync(ctx.Parent<Order>().BookId!, ct));
         }

@@ -6,6 +6,7 @@ using graphqlServer.Schema.Publishers;
 using graphqlServer.Support;
 using HotChocolate.Execution.Instrumentation;
 using HotChocolate.Language;
+using HotChocolate.Data.Projections;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,10 @@ builder.Services
     // Middlewares
     .AddDirectiveType<DecodeBase64DirectiveType>()
     .AddHttpRequestInterceptor<HttpRequestInterceptor>()
+    .AddConvention<IProjectionConvention>(
+                new ProjectionConventionExtension(
+                    x => x.AddProviderExtension(
+                        new ProjectionProviderExtension(y => y.RegisterFieldHandler<ConditionFieldProjectionHandler>()))))
     // Automatic Persisted Queries
     .UseAutomaticPersistedQueryPipeline()
     .AddInMemoryQueryStorage()
