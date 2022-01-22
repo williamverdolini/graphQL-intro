@@ -1,0 +1,395 @@
+﻿schema {
+  query: Query
+  subscription: Subscription
+}
+
+type Query {
+  _schemaDefinition(configuration: String!): _SchemaDefinition
+  "Fetches an object given its ID."
+  node("ID of the object." id: ID!): Node
+  "Lookup nodes by a list of IDs."
+  nodes("The list of node IDs." ids: [ID!]!): [Node]!
+  authors("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [AuthorSortInput!] where: AuthorFilterInput): AuthorsConnection
+  authorById(id: String!): Author
+  publishers("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [PublisherSortInput!] where: PublisherFilterInput): PublishersConnection
+  publisherById(id: String!): Publisher
+  books("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [BookSortInput!] where: BookFilterInput): BooksConnection
+  bookById(id: String!): Book
+  userOrders("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [OrderSortInput!] where: OrderFilterInput): UserOrdersConnection
+  userOrderById(id: String!): Order
+  orders("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [OrderSortInput!] where: OrderFilterInput): OrdersConnection
+  orderById(id: String!): Order
+}
+
+type Subscription {
+  orderConfirmed: Order!
+}
+
+"The node interface is implemented by entities that have a global unique identifier."
+interface Node {
+  id: ID!
+}
+
+"A person who wrote or co-wrote one or more books"
+type Author implements Node {
+  "Author Id. It's a GUID"
+  id: ID!
+  "Author's firstname"
+  firstName: String
+  "Author's surname"
+  surnName: String
+  "Author's web site, if she has one"
+  webSite: String
+  "Author's email"
+  email: String
+}
+
+type Publisher implements Node {
+  id: ID!
+  name: String
+  address: String
+}
+
+type Book implements Node {
+  id: ID!
+  authors: [Author!]!
+  publisher: Publisher
+  relatedBooks: [Book!]!
+  title: String
+  abstract: String
+  editionVersion: Int
+  publicationDate: DateTime
+  categories: [String!]
+}
+
+type Order {
+  book: Book
+  id: String!
+  userName: String
+  boughtOn: DateTime!
+  quantity: Int!
+  amount: Long!
+}
+
+type _SchemaDefinition {
+  name: String!
+  document: String!
+  extensionDocuments: [String!]!
+}
+
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+  AFTER_RESOLVER
+}
+
+"The multiplier path scalar represents a valid GraphQL multiplier path string."
+scalar MultiplierPath
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+"The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1."
+scalar Long
+
+"A person who wrote or co-wrote one or more books"
+input AuthorSortInput {
+  "Author Id. It's a GUID"
+  id: SortEnumType
+  "Author's firstname"
+  firstName: SortEnumType
+  "Author's surname"
+  surnName: SortEnumType
+  "Author's web site, if she has one"
+  webSite: SortEnumType
+  "Author's email"
+  email: SortEnumType
+}
+
+"A person who wrote or co-wrote one or more books"
+input AuthorFilterInput {
+  and: [AuthorFilterInput!]
+  or: [AuthorFilterInput!]
+  "Author Id. It's a GUID"
+  id: StringOperationFilterInput
+  "Author's firstname"
+  firstName: StringOperationFilterInput
+  "Author's surname"
+  surnName: StringOperationFilterInput
+  "Author's web site, if she has one"
+  webSite: StringOperationFilterInput
+  "Author's email"
+  email: StringOperationFilterInput
+}
+
+"A connection to a list of items."
+type AuthorsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [AuthorsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Author!]
+  totalCount: Int!
+}
+
+input PublisherSortInput {
+  id: SortEnumType
+  name: SortEnumType
+  address: SortEnumType
+}
+
+input PublisherFilterInput {
+  and: [PublisherFilterInput!]
+  or: [PublisherFilterInput!]
+  id: StringOperationFilterInput
+  name: StringOperationFilterInput
+  address: StringOperationFilterInput
+}
+
+"A connection to a list of items."
+type PublishersConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PublishersEdge!]
+  "A flattened list of the nodes."
+  nodes: [Publisher!]
+  totalCount: Int!
+}
+
+input BookSortInput {
+  id: SortEnumType
+  title: SortEnumType
+  abstract: SortEnumType
+  editionVersion: SortEnumType
+  publicationDate: SortEnumType
+  publisher: SortEnumType
+}
+
+input BookFilterInput {
+  and: [BookFilterInput!]
+  or: [BookFilterInput!]
+  id: StringOperationFilterInput
+  title: StringOperationFilterInput
+  abstract: StringOperationFilterInput
+  editionVersion: ComparableNullableOfInt32OperationFilterInput
+  publicationDate: ComparableNullableOfDateTimeOperationFilterInput
+  categories: ListStringOperationFilterInput
+  authors: ListStringOperationFilterInput
+  publisher: StringOperationFilterInput
+  relatedBooks: ListStringOperationFilterInput
+}
+
+"A connection to a list of items."
+type BooksConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [BooksEdge!]
+  "A flattened list of the nodes."
+  nodes: [Book!]
+  totalCount: Int!
+}
+
+input OrderSortInput {
+  id: SortEnumType
+  bookId: SortEnumType
+  userName: SortEnumType
+  boughtOn: SortEnumType
+  quantity: SortEnumType
+  amount: SortEnumType
+}
+
+input OrderFilterInput {
+  and: [OrderFilterInput!]
+  or: [OrderFilterInput!]
+  id: StringOperationFilterInput
+  bookId: StringOperationFilterInput
+  userName: StringOperationFilterInput
+  boughtOn: ComparableDateTimeOperationFilterInput
+  quantity: ComparableInt32OperationFilterInput
+  amount: ComparableInt64OperationFilterInput
+}
+
+"A connection to a list of items."
+type UserOrdersConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [UserOrdersEdge!]
+  "A flattened list of the nodes."
+  nodes: [Order!]
+  totalCount: Int!
+}
+
+"A connection to a list of items."
+type OrdersConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [OrdersEdge!]
+  "A flattened list of the nodes."
+  nodes: [Order!]
+  totalCount: Int!
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+}
+
+"An edge in a connection."
+type AuthorsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Author!
+}
+
+"An edge in a connection."
+type PublishersEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Publisher!
+}
+
+input ComparableNullableOfInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input ComparableNullableOfDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ListStringOperationFilterInput {
+  all: StringOperationFilterInput
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
+  any: Boolean
+}
+
+"An edge in a connection."
+type BooksEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Book!
+}
+
+input ComparableDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime!]
+  nin: [DateTime!]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ComparableInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int!]
+  nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input ComparableInt64OperationFilterInput {
+  eq: Long
+  neq: Long
+  in: [Long!]
+  nin: [Long!]
+  gt: Long
+  ngt: Long
+  gte: Long
+  ngte: Long
+  lt: Long
+  nlt: Long
+  lte: Long
+  nlte: Long
+}
+
+"An edge in a connection."
+type UserOrdersEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Order!
+}
+
+"An edge in a connection."
+type OrdersEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Order!
+}
+
+directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
+
+directive @decodeBase64 on FIELD
+
+"The cost directives is used to express the complexity of a field."
+directive @cost("Defines the complexity of the field." complexity: Int! = 1 "Defines field arguments that act as complexity multipliers." multipliers: [MultiplierPath!] defaultMultiplier: Int) on FIELD_DEFINITION

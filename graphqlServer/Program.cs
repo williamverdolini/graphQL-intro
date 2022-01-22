@@ -26,6 +26,7 @@ builder.Services
     .AddSingleton<MongoContext>()
     .AddHostedService<DataSeeder>()
     .AddHostedService<OrdersDataSeeder>()
+    .AddHostedService<OrdersNotifierJob>()
     .AddScoped(sp => sp.GetRequiredService<MongoContext>().Database.GetCollection<Author>("author"))
     .AddScoped(sp => sp.GetRequiredService<MongoContext>().Database.GetCollection<Publisher>("publisher"))
     .AddScoped(sp => sp.GetRequiredService<MongoContext>().Database.GetCollection<Book>("book"))
@@ -38,6 +39,9 @@ builder.Services
         .AddTypeExtension<PublisherQueries>()
         .AddTypeExtension<BookQueries>()
         .AddTypeExtension<UserOrderQueries>()
+    .AddInMemorySubscriptions()
+    .AddSubscriptionType(d => d.Name("Subscription"))
+        .AddTypeExtension<OrderSubscriptions>()
     // Registers the filter convention of MongoDB
     .AddMongoDbFiltering()
     // Registers the sorting convention of MongoDB
@@ -89,6 +93,7 @@ var app = builder.Build();
 app.UseCors("ng-client");
 app.MapGet("/", () => "Hello World!");
 app.UseRouting();
+app.UseWebSockets();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>

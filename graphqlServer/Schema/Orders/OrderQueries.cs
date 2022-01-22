@@ -43,5 +43,34 @@ namespace graphqlServer.Schema.Orders
             })
             .LoadAsync(id);
         }
+        
+        [UsePaging(IncludeTotalCount = true)]
+        [UseProjection]
+        [UseSorting]
+        [UseFiltering]
+        public IExecutable<Order> GetOrders(
+            [Service] IMongoCollection<Order> collection)
+            => collection.AsExecutable();
+
+        [UseFirstOrDefault]
+        public Task<Order> GetOrderById(
+            IResolverContext context,
+            [Service] IMongoCollection<Order> collection,
+            string id,
+            CancellationToken ct)
+        {
+            // with inline dataloader, we can access context info 
+            // Here Authorize guarantees that userName is populated (but is not necessary)
+            return context.BatchDataLoader<string, Order>(async (keys, ct) =>
+            {
+                // instead of fetching one, we fetch multiple items
+                var items = await collection
+                        .Find(x => keys.Contains(x.Id))
+                        .ToListAsync(ct)
+                        .ConfigureAwait(false);
+                return items.ToDictionary(x => x.Id);
+            })
+            .LoadAsync(id);
+        }
     }
 }

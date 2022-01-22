@@ -1,0 +1,14 @@
+query orderById($orderId: String) {
+  orders(where: {id: { eq: $orderId}, }) {
+    nodes{
+      book {
+        title
+        abstract
+        categories
+      }
+      boughtOn
+      quantity
+      amount
+    }
+  }
+}

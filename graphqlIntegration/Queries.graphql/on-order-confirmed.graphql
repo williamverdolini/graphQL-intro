@@ -1,0 +1,9 @@
+subscription onOrderConfirmed {
+  orderConfirmed {
+    userName
+    book {
+      title
+    }
+    boughtOn
+  }
+}
